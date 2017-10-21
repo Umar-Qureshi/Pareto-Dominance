@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)http://getbootstrap.com/docs/4.0/examples/navbar-top/ -->
+<html lang="en" class="gr__getbootstrap_com"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+
+    <title>Pareto Dominance Algorithm</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./Top navbar example for Bootstrap_files/navbar-top.css" rel="stylesheet">
+  </head>
+
+  <body data-gr-c-s-loaded="true" class="vsc-initialized">
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      <a class="navbar-brand" href="http://getbootstrap.com/docs/4.0/examples/navbar-top/#"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="http://getbootstrap.com/docs/4.0/examples/navbar-top/#">Pareto Dominance <span class="sr-only">(current)</span></a>
+          </li>
+
+        </ul>
+
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Pareto Dominance Algorithm</h1>
+        <p class="lead"> Pareto Dominance finds the most desirable outcome in a plot, if you want the upperbound on x and y, or want the lowerbound on x with upperbound on y etc.  (terrible explanation will fix later)</p>
+        
+      </div>
+    </div>
+      
+      
+<center>
+<button type="button" class="btn btn-primary" onclick="scatter20()">20 point</button>
+<button type="button" class="btn btn-primary" onclick="scatter100()">100 point</button>
+<button type="button" class="btn btn-primary" onclick="scatter9999()">9999 points</button>
+<button type="button" class="btn btn-primary" onclick="HighHigh()">High u, High v (Red)</button>
+<button type="button" class="btn btn-primary" onclick="LowHigh()">Low u, High v (Orange)</button>
+<button type="button" class="btn btn-primary" onclick="LowLow()">Low u, Low v (Green)</button>
+<button type="button" class="btn btn-primary" onclick="HighLow()">High u, Low v (Purple)</button>
+<button type="button" class="btn btn-primary" onclick="All()">All</button>
+</center>
+
+
+<!--Drawing the chart in the specified place --> 
+<center><div id="chart_div" style="width: 1800px; height: 800px;"></div></center>
+<!--<div id="container" style="min-width: 310px; height: 400px; max-width: 700px; margin: 0 auto"></div>!-->
+ 
+
+<p>@Anthony display the length of the line here(Sample output) along with the run times </p>
+    
+
+
+<!-- Code for the Graph!-->
+      
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+
+
+		//Defining the array for the scatterplot that gets drawn in blue points
+        var Scatter_Array = [];
+        //Defining the colour arrays
+        var HH_Array = [];
+        var HL_Array = [];
+        var LH_Array = [];
+        var LL_Array = [];
+    
+        google.charts.load('current', {'packages':['corechart']});
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            //Xvalue
+            data.addColumn('number', 'X');
+            //Colored points
+            data.addColumn('number', 'Data');
+         	data.addColumn('number', 'High u High v');
+         	data.addColumn('number', 'Low u High v');
+         	data.addColumn('number', 'Low u Low v');
+         	data.addColumn('number', 'High u Low v');
+
+
+
+            //Taking the Scatter_Array and adding it as blue pointsto the Googlechart
+            for (var i=0; i<(Scatter_Array.length); i=i+2) {
+
+            	//even numbers are the x values, odd numbers are the y values
+                data.addRow( [Scatter_Array[i], Scatter_Array[i+1], null, null, null, null] );
+                
+            }
+
+            console.log(Scatter_Array);
+
+
+            //Red points for High High Pareto dominance
+            for (var r=0; r<(HH_Array.length); r=r+2) {
+
+            	//even numbers are the x values, odd numbers are the y values
+                data.addRow( [HH_Array[r], null, HH_Array[r+1], null, null, null] );
+                
+            }
+
+            //Orange points for Low High Pareto dominance
+            for (var o=0; o<(LH_Array.length); o=o+2) {
+
+                data.addRow( [LH_Array[o], null, null, LH_Array[o+1], null, null] );
+                
+            }
+
+
+            //Green points for Low Low Pareto dominance
+            for (var g=0; g<(LL_Array.length); g=g+2) {
+
+                data.addRow( [LL_Array[g], null, null, null, LL_Array[g+1], null] );
+                
+            }
+
+            //Purple points for Low Low Pareto dominance
+            for (var p=0; p<(HL_Array.length); p=p+2) {
+
+                data.addRow( [HL_Array[p], null, null, null, null, HL_Array[p+1] ] );
+                
+            }
+
+
+
+
+            //Drawing the Graph
+            var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+       
+                chart.draw(data, {
+                height: 800,
+                width: 1200,
+                title: 'Pareto Dominance Algorithm Visualization',
+				'vAxis': {'title': 'Y Axis'},
+				'hAxis': {'title': 'X Axis'},
+                //Connecting the dots
+                series: {
+                	//Blue points
+                    0: {
+                        
+                        lineWidth: 0
+                    },
+                    //Red Points 
+                    1: {
+                    	lineWidth: 1
+                    },
+                    //Orange
+                    2: {
+                    	lineWidth: 1
+                    },
+                    //Green
+                    3: {
+                    	lineWidth: 1
+                    },
+                    //Purple
+                    4: {
+                    	lineWidth: 1
+                    }                                                            
+                }
+            });
+        }
+
+
+    google.load('visualization', '1', {packages:['corechart'], callback: drawChart});
+
+    
+
+    //Button Functions
+
+
+    	//Makes a random Scatter plot with 20 points
+    	function scatter20() {
+
+    		//Clearing the graph
+    		Scatter_Array.length = 0;
+    		HH_Array.length = 0;
+    		HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+    		//for loop runs 40 times as we need 40 numbers for x and y together
+			for (var z=0; z <40; z++){
+
+			//Gets random values from -200 to 200 and inserts them into the array
+		    random_Point = Math.random() * (20 + 20)- 20;
+
+		    //adding each random number generated into the array
+		    Scatter_Array[z] = random_Point;		   
+		   
+			}
+
+			drawChart();
+		}
+
+
+    	function scatter100() {
+
+    		Scatter_Array.length = 0;
+    		HH_Array.length = 0;
+    		HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+			for (var z=0; z <200; z++){
+
+			//Gets random values from -200 to 200 and inserts them into the array
+		    random_Point = Math.floor( Math.random() * (200 + 200)- 200 );
+
+		    Scatter_Array[z] = random_Point;		   
+		   
+			}
+
+			drawChart();
+		}
+
+
+		//Makes a random Scatter plot with 9999 points
+    	function scatter9999() {
+
+    		Scatter_Array.length = 0;
+    		HH_Array.length = 0;
+    		HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+			for (var z=0; z <19998; z++){
+
+			//Gets random values from -1000 to 1000 and inserts them into the array
+		    random_Point = Math.floor( Math.random() * (10000 + 10000)- 10000 );
+
+		    Scatter_Array[z] = random_Point;		   
+		   
+			}
+
+			drawChart();
+		}
+
+
+		function HighHigh() {
+
+			//Clearing the arrays, but not clearing the blue points
+			HH_Array.length = 0;
+			HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+    		//@Anthony just add the correct pareto dominance co-ords into the array below
+    		//remember arrays format is like ths [x1,y1,x2,y2...]
+			HH_Array = [10, 10, 50, 10, 50, 50, 10, 50, 10 ,10];
+
+			drawChart();
+
+		}
+
+
+		function LowHigh() {
+
+			HH_Array.length = 0;
+			HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+    		//@Anthony just add the correct pareto dominance co-ords into the array below
+    		//remember arrays format is like ths [x1,y1,x2,y2...]
+			LH_Array = [-10, 10, -50, 10, -50, 50, -10, 50, -10 ,10];
+
+			drawChart();
+
+		}
+
+		function LowLow() {
+
+			HH_Array.length = 0;
+			HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+    		//@Anthony just add the correct pareto dominance co-ords into the array below
+    		//remember arrays format is like ths [x1,y1,x2,y2...]
+			LL_Array = [-10, -10, -50, -10, -50, -50, -10, -50, -10 ,-10];
+
+			drawChart();
+
+		}
+
+		function HighLow() {
+
+			//Clearing the arrays, but not clearing the blue points
+			HH_Array.length = 0;
+			HL_Array.length = 0;
+    		LH_Array.length = 0;
+    		LL_Array.length = 0;
+
+    		//@Anthony just add the correct pareto dominance co-ords into the array below
+    		//remember arrays format is like ths [x1,y1,x2,y2...]
+			HL_Array = [10, -10, 50, -10, 50, -50, 10, -50, 10 ,-10];
+
+			drawChart();
+
+		}
+
+		//Draw all the Pareto Dominances at one time
+		function All() {
+
+
+    		//@Anthony just add the correct pareto dominance co-ords into the array below
+    		//remember arrays format is like ths [x1,y1,x2,y2...]
+    		HH_Array = [10, 10, 50, 10, 50, 50, 10, 50, 10 ,10];
+    		LH_Array = [-10, 10, -50, 10, -50, 50, -10, 50, -10 ,10];
+    		LL_Array = [-10, -10, -50, -10, -50, -50, -10, -50, -10 ,-10];
+			HL_Array = [10, -10, 50, -10, 50, -50, 10, -50, 10 ,-10];
+
+			drawChart();
+
+		}
+
+
+</script>      
+    
+      
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+    
+  <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script class="jsbin" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./Top navbar example for Bootstrap_files/jquery-3.2.1.slim.min.js.download" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery.min.js"><\/script>');</script>
+    <script src="./Top navbar example for Bootstrap_files/popper.min.js.download"></script>
+    <script src="./Top navbar example for Bootstrap_files/bootstrap.min.js.download"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./Top navbar example for Bootstrap_files/ie10-viewport-bug-workaround.js.download"></script>
+  
+
+</body></html>
