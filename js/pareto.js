@@ -14,6 +14,11 @@ LL = 8
 
 google.charts.load('current', { 'packages': ['corechart'] });
 
+window.onload = function() {
+    scatter20();
+    HighHigh();
+}
+
 function drawChart() {
     var data = new google.visualization.DataTable();
     //Xvalue
